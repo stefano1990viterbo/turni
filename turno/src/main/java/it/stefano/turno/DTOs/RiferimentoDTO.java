@@ -1,4 +1,4 @@
-package it.stefano.turno.entitysDTO;
+package it.stefano.turno.DTOs;
 
 public class RiferimentoDTO {
 	private String numeroTelefono;

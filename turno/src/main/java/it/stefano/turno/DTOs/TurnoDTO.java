@@ -1,4 +1,4 @@
-package it.stefano.turno.entitysDTO;
+package it.stefano.turno.DTOs;
 
 import java.time.LocalDateTime;
 import java.util.List;
