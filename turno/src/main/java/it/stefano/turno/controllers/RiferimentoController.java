@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import it.stefano.turno.DTOs.RiferimentoDTO;
 import it.stefano.turno.entitys.Riferimento;
-import it.stefano.turno.entitysDTO.RiferimentoDTO;
 import it.stefano.turno.services.RiferimentoService;
 
 

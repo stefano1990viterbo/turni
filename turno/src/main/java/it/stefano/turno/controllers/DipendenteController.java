@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import it.stefano.turno.DTOs.DipendenteDTO;
 import it.stefano.turno.entitys.Dipendente;
-import it.stefano.turno.entitysDTO.DipendenteDTO;
 import it.stefano.turno.services.DipendenteService;
 
 @RestController
