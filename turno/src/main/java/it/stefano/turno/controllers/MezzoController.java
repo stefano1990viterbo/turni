@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import it.stefano.turno.DTOs.MezzoDTO;
 import it.stefano.turno.entitys.Mezzo;
-import it.stefano.turno.entitys.Riferimento;
 import it.stefano.turno.services.MezzoService;
 
 @RestController
@@ -42,7 +41,7 @@ public class MezzoController {
 
 	@PostMapping("/")
 	public void aggiungiMezzo(@RequestBody @Valid MezzoDTO mezzoDTO) {
-	
+
 		mezzoService.aggiungiMezzo(convertToEntity(mezzoDTO));
 	}
 
@@ -67,17 +66,6 @@ public class MezzoController {
 
 		Mezzo mezzo;
 		mezzo = modelMapper.map(mezzoDTO, Mezzo.class);
-
-		
-		if(mezzoDTO.getRiferimenti()!=null) {
-		for (Riferimento r : mezzoDTO.getRiferimenti()) {
-			System.out.println(r.getNumeroTelefono());
-			
-				
-				mezzo.getRiferimenti().add(r);
-
-			} 
-		}
 
 		return mezzo;
 	}

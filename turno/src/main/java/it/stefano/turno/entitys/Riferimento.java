@@ -6,6 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
+
 public class Riferimento {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

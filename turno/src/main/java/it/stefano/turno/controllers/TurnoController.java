@@ -37,7 +37,7 @@ public class TurnoController {
 	@GetMapping("/")
 	public List<TurnoDTO> listaTurni() {
 		return turnoService.listaTurni().stream().map(this::convertToDTO).collect(Collectors.toList());
-
+		
 	}
 
 	@PostMapping("/")

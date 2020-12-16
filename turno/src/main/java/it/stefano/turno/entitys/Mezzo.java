@@ -2,6 +2,7 @@ package it.stefano.turno.entitys;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -13,7 +14,7 @@ public class Mezzo {
 	@Id
 	private String targa;
 	private String enteAppartenenza;
-	@OneToMany
+	@OneToMany(cascade = {CascadeType.ALL})
 	private List<Riferimento> riferimenti;
 	private TipoMezzo tipoMezzo;
 	
