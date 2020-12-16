@@ -1,5 +1,6 @@
 package it.stefano.turno.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -14,7 +15,7 @@ import it.stefano.turno.repositorys.TurnoRepository;
 
 @Service
 public class TurnoService {
-	 Logger logger = LoggerFactory.getLogger(MezzoService.class);
+	 Logger logger = LoggerFactory.getLogger(TurnoService.class);
 
 	TurnoRepository turnoRepository;
 	MezzoRepository mezzoRepository;
@@ -65,20 +66,22 @@ public class TurnoService {
 
 	
 	public boolean orarioMezzoCongruo(Turno turno) {
-		boolean controlloMezzo = false;
-		List<Turno> listaTurniByMezzo = null;
+
+		List<Turno> listaTurniByMezzo= new ArrayList<>();
 		try {
 		listaTurniByMezzo = turnoRepository.findByMezzo(turno.getMezzo().getTarga());
 		}
 		catch (Exception e) {
 			logger.error("QUALCOSA E' ANDATO MALE... FORSE IL MEZZO NON C'E'");
 		}
-		Predicate<Turno> orarioMezzoCongruo = t -> turno.getIstanteFine().isAfter(t.getIstanteFine())
-				|| turno.getIstanteFine().isBefore(t.getIstanteInizio())
-						&& turno.getIstanteInizio().isBefore(t.getIstanteInizio())
-				|| turno.getIstanteInizio().isBefore(t.getIstanteFine());
 		
-		return controlloMezzo = listaTurniByMezzo.stream().filter(orarioMezzoCongruo).count() == 0L;
+		Predicate<Turno> orarioMezzoCongruo = t -> (turno.getIstanteInizio().isBefore(t.getIstanteInizio()))
+				&& (turno.getIstanteFine().isBefore(t.getIstanteFine()))
+				||  (turno.getIstanteInizio().isAfter(t.getIstanteInizio()))
+				&& (turno.getIstanteFine().isAfter(t.getIstanteFine()));
+		
+		
+		return listaTurniByMezzo.stream().filter(orarioMezzoCongruo).count() == 0L;
 	}
 	
 	
