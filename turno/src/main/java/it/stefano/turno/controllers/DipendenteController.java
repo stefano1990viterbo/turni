@@ -44,18 +44,16 @@ public class DipendenteController {
 		dipendenteService.aggiungiDipendente(convertToEntity(dipendenteDTO));
 	}
 
-	@GetMapping("/{idDipedente}")
+	@GetMapping("/{idDipendente}")
 	public DipendenteDTO dettaglioDipendente(@PathVariable Long idDipendente) {
-		Dipendente dipendente = dipendenteService.leggiDipendeteById(idDipendente);
+		Dipendente dipendente = dipendenteService.leggiDipendenteById(idDipendente);
 		return convertToDTO(dipendente);
 	}
 
-	@DeleteMapping("/{idDipedente}")
+	@DeleteMapping("/{idDipendente}")
 	public void rimuoviDipendente(@PathVariable Long idDipendente) {
 		dipendenteService.rimuoviDipendenteById(idDipendente);
 	}
-
-
 
 	private DipendenteDTO convertToDTO(Dipendente dipendente) {
 		DipendenteDTO dipendenteDTO;

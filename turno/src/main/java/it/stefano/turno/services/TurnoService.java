@@ -15,7 +15,7 @@ import it.stefano.turno.repositorys.TurnoRepository;
 
 @Service
 public class TurnoService {
-	 Logger logger = LoggerFactory.getLogger(TurnoService.class);
+	Logger logger = LoggerFactory.getLogger(TurnoService.class);
 
 	TurnoRepository turnoRepository;
 	MezzoRepository mezzoRepository;
@@ -53,38 +53,39 @@ public class TurnoService {
 //
 //		controlloMezzo = listaTurniByMezzo.stream().filter(orarioMezzoCongruo).count() == 0L;
 
-		
-		if(orarioMezzoCongruo(turno)) {
-		turnoRepository.save(turno);
-		}
-		else {
+		if (orarioMezzoCongruo(turno)) {
+			turnoRepository.save(turno);
+		} else {
 			logger.error("MI DISPIACE IL MEZZO E' OCCUPATO IN QUEL MOMENTO");
 		}
-		
 
 	}
 
-	
+	/**
+	 *
+	 * @param turno
+	 * @return TRUE, se il mezzo che cerchiamo di inserire in un determinato turno,
+	 *         non è impegnato in altri turni in quello stesso orario. FALSE se
+	 *         vogliamo inserire un mezzo in un orario in cui lui è gia impegnato in
+	 *         un altro turno.
+	 */
 	public boolean orarioMezzoCongruo(Turno turno) {
 
-		List<Turno> listaTurniByMezzo= new ArrayList<>();
+		List<Turno> listaTurniByMezzo = new ArrayList<>();
 		try {
-		listaTurniByMezzo = turnoRepository.findByMezzo(turno.getMezzo().getTarga());
-		}
-		catch (Exception e) {
+			listaTurniByMezzo = turnoRepository.findByMezzo(turno.getMezzo().getTarga());
+		} catch (Exception e) {
 			logger.error("QUALCOSA E' ANDATO MALE... FORSE IL MEZZO NON C'E'");
 		}
-		
-		Predicate<Turno> orarioMezzoCongruo = t -> (turno.getIstanteInizio().isBefore(t.getIstanteInizio()))
-				&& (turno.getIstanteFine().isBefore(t.getIstanteFine()))
-				||  (turno.getIstanteInizio().isAfter(t.getIstanteInizio()))
-				&& (turno.getIstanteFine().isAfter(t.getIstanteFine()));
-		
-		
+
+		Predicate<Turno> orarioMezzoCongruo = t -> (turno.getIstanteInizio().isAfter(t.getIstanteInizio())
+				&& turno.getIstanteInizio().isBefore(t.getIstanteFine()))
+				|| (turno.getIstanteFine().isAfter(t.getIstanteInizio())
+						&& turno.getIstanteFine().isBefore(t.getIstanteFine()));
+
 		return listaTurniByMezzo.stream().filter(orarioMezzoCongruo).count() == 0L;
 	}
-	
-	
+
 	public Turno leggiTurnoById(Long idTurno) {
 		return turnoRepository.findById(idTurno).orElseThrow(() -> new IllegalArgumentException("Id non presente"));
 	}

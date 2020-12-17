@@ -29,7 +29,7 @@ public class DipendenteService {
 		
 	}
 
-	public Dipendente leggiDipendeteById(Long idDipendente) {
+	public Dipendente leggiDipendenteById(Long idDipendente) {
 		return dipendenteRepository.findById(idDipendente).orElseThrow(() -> new IllegalArgumentException("Id non presente"));
     }
 	

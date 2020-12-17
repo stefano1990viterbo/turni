@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import it.stefano.turno.DTOs.DipendenteDTO;
 import it.stefano.turno.DTOs.MezzoDTO;
+import it.stefano.turno.entitys.Dipendente;
 import it.stefano.turno.entitys.Mezzo;
 import it.stefano.turno.services.MezzoService;
 
@@ -50,6 +52,7 @@ public class MezzoController {
 		Mezzo mezzo = mezzoService.leggiMezzoByTarga(targa);
 		return convertToDTO(mezzo);
 	}
+	
 
 	@DeleteMapping("/{targa}")
 	public void rimuoviMezzo(@PathVariable String targa) {
