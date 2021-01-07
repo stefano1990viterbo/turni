@@ -11,23 +11,22 @@ public class Riferimento {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-private String numeroTelefono;
+	private String numeroTelefono;
 
-public String getNumeroTelefono() {
-	return numeroTelefono;
-}
+	public String getNumeroTelefono() {
+		return numeroTelefono;
+	}
 
-public void setNumeroTelefono(String numeroTelefono) {
-	this.numeroTelefono = numeroTelefono;
-}
+	public void setNumeroTelefono(String numeroTelefono) {
+		this.numeroTelefono = numeroTelefono;
+	}
 
-public Long getId() {
-	return id;
-}
+	public Long getId() {
+		return id;
+	}
 
-public void setId(Long id) {
-	this.id = id;
-}
-
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 }

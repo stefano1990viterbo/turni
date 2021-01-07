@@ -9,67 +9,47 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import it.stefano.turno.entitys.Dipendente;
 import it.stefano.turno.entitys.Turno;
+import it.stefano.turno.repositorys.DipendenteRepository;
 import it.stefano.turno.repositorys.MezzoRepository;
 import it.stefano.turno.repositorys.TurnoRepository;
 
 @Service
 public class TurnoService {
-	Logger logger = LoggerFactory.getLogger(TurnoService.class);
+	static Logger logger = LoggerFactory.getLogger(TurnoService.class);
 
 	TurnoRepository turnoRepository;
 	MezzoRepository mezzoRepository;
+	DipendenteRepository dipendenteRepository;
 
 	@Autowired
-	public TurnoService(TurnoRepository turnoRepository, MezzoRepository mezzoRepository) {
+	public TurnoService(TurnoRepository turnoRepository, MezzoRepository mezzoRepository,
+			DipendenteRepository dipendenteRepository) {
 		this.turnoRepository = turnoRepository;
 		this.mezzoRepository = mezzoRepository;
-
+		this.dipendenteRepository = dipendenteRepository;
 	}
 
 	public List<Turno> listaTurni() {
 		return (List<Turno>) turnoRepository.findAll();
 	}
 
-	public void aggiungiTurno(Turno turno) {
+	public Turno aggiungiTurno(Turno turno) {
 
-//		boolean controlloMezzo = false;
-//		/*
-//		 * devo controllare se esiste un turno con gli stessi orari a cui corrisponde lo
-//		 * stesso mezzo
-//		 */
-//		// controllo tutti i turni di quel mezzo
-//		List<Turno> listaTurniByMezzo = turnoRepository.findByMezzo(turno.getMezzo().getTarga());
-//
-//		// filtro per orario dei turni di quel mezzo, comparandoli con i turni che
-//		// voglio inserire.
-//		// se mi torna true, significa che non ha trovato nessuna corrispondenza e
-//		// quindi può essere inserito.
-//
-//		Predicate<Turno> orarioMezzoCongruo = t -> turno.getIstanteFine().isAfter(t.getIstanteFine())
-//				|| turno.getIstanteFine().isBefore(t.getIstanteInizio())
-//						&& turno.getIstanteInizio().isBefore(t.getIstanteInizio())
-//				|| turno.getIstanteInizio().isBefore(t.getIstanteFine());
-//
-//		controlloMezzo = listaTurniByMezzo.stream().filter(orarioMezzoCongruo).count() == 0L;
+		// controllo orario mezzo
+		// controllo orario equipaggio
+		// se i controlli sono ok, aggiungo il turno
 
-		if (orarioMezzoCongruo(turno)) {
+		if (aggiungiMezzoAlTurno(turno) && aggiungiDipendenteAlTurno(turno)) {
 			turnoRepository.save(turno);
 		} else {
-			logger.error("MI DISPIACE IL MEZZO E' OCCUPATO IN QUEL MOMENTO");
+			logger.error("CONTROLLARE ORARIO");
 		}
-
+		return turno;
 	}
 
-	/**
-	 *
-	 * @param turno
-	 * @return TRUE, se il mezzo che cerchiamo di inserire in un determinato turno,
-	 *         non è impegnato in altri turni in quello stesso orario. FALSE se
-	 *         vogliamo inserire un mezzo in un orario in cui lui è gia impegnato in
-	 *         un altro turno.
-	 */
-	public boolean orarioMezzoCongruo(Turno turno) {
+	public boolean controlloTurnoMezzo(Turno turno) {
 
 		List<Turno> listaTurniByMezzo = new ArrayList<>();
 		try {
@@ -78,12 +58,54 @@ public class TurnoService {
 			logger.error("QUALCOSA E' ANDATO MALE... FORSE IL MEZZO NON C'E'");
 		}
 
-		Predicate<Turno> orarioMezzoCongruo = t -> (turno.getIstanteInizio().isAfter(t.getIstanteInizio())
+		return listaTurniByMezzo.stream().filter(orarioCongruo(turno)).count() == 0L;
+	}
+
+	public boolean aggiungiMezzoAlTurno(Turno turno) {
+		if (controlloTurnoMezzo(turno)) {
+			return true;
+		} else {
+			logger.error("MI DISPIACE IL MEZZO E' OCCUPATO IN QUEL MOMENTO");
+			return false;
+		}
+	}
+
+	public boolean aggiungiDipendenteAlTurno(Turno turno) {
+
+		boolean occupato = false;
+		for (Dipendente d : turno.getEquipaggio()) {
+			if (controlloTurnoDipendente(turno, d.getId())) {
+				occupato = true;
+			} else {
+				logger.error(
+						"il dipendente " + d.getId() + d.getNome() + d.getCognome() + " è occupato in quell'orario");
+
+			}
+		}
+		return occupato;
+
+	}
+
+	public boolean controlloTurnoDipendente(Turno turno, Long id) {
+
+		Dipendente dipendenteDaControllare = new Dipendente();
+		List<Turno> listaTurniByDipendente = new ArrayList<>();
+		try {
+			dipendenteDaControllare = dipendenteRepository.findById(id).get();
+		} catch (Exception e) {
+			logger.error("il dipendente non esiste");
+		}
+		listaTurniByDipendente = turnoRepository.findByDipendente(dipendenteDaControllare.getId());
+		return listaTurniByDipendente.stream().filter(orarioCongruo(turno)).count() == 0L;
+
+	}
+
+	public static Predicate<Turno> orarioCongruo(Turno turno) {
+		return t -> (turno.getIstanteInizio().isAfter(t.getIstanteInizio())
 				&& turno.getIstanteInizio().isBefore(t.getIstanteFine()))
 				|| (turno.getIstanteFine().isAfter(t.getIstanteInizio())
 						&& turno.getIstanteFine().isBefore(t.getIstanteFine()));
 
-		return listaTurniByMezzo.stream().filter(orarioMezzoCongruo).count() == 0L;
 	}
 
 	public Turno leggiTurnoById(Long idTurno) {
