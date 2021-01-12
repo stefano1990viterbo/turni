@@ -15,9 +15,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Getter
-@Setter
-@ToString
 public class Riferimento {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,5 +24,29 @@ public class Riferimento {
 	private LocalDateTime dtInsertimento;
 	@UpdateTimestamp
 	private LocalDateTime dtUpdate;
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public String getNumeroTelefono() {
+		return numeroTelefono;
+	}
+	public void setNumeroTelefono(String numeroTelefono) {
+		this.numeroTelefono = numeroTelefono;
+	}
+	public LocalDateTime getDtInsertimento() {
+		return dtInsertimento;
+	}
+	public void setDtInsertimento(LocalDateTime dtInsertimento) {
+		this.dtInsertimento = dtInsertimento;
+	}
+	public LocalDateTime getDtUpdate() {
+		return dtUpdate;
+	}
+	public void setDtUpdate(LocalDateTime dtUpdate) {
+		this.dtUpdate = dtUpdate;
+	}
 
 }

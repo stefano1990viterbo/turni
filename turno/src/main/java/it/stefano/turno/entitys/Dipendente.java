@@ -15,9 +15,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Getter
-@Setter
-@ToString
 public class Dipendente {
 
 	@Id
@@ -33,6 +30,54 @@ public class Dipendente {
 
 	public Dipendente() {
 
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	public String getCognome() {
+		return cognome;
+	}
+
+	public void setCognome(String cognome) {
+		this.cognome = cognome;
+	}
+
+	public Mansione getMansione() {
+		return mansione;
+	}
+
+	public void setMansione(Mansione mansione) {
+		this.mansione = mansione;
+	}
+
+	public LocalDateTime getDtInsertimento() {
+		return dtInsertimento;
+	}
+
+	public void setDtInsertimento(LocalDateTime dtInsertimento) {
+		this.dtInsertimento = dtInsertimento;
+	}
+
+	public LocalDateTime getDtUpdate() {
+		return dtUpdate;
+	}
+
+	public void setDtUpdate(LocalDateTime dtUpdate) {
+		this.dtUpdate = dtUpdate;
 	}
 
 }
