@@ -2,6 +2,7 @@ package it.stefano.turno.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
 import org.slf4j.Logger;
@@ -41,7 +42,7 @@ public class TurnoService {
 		// controllo orario equipaggio
 		// se i controlli sono ok, aggiungo il turno
 
-		if (aggiungiMezzoAlTurno(turno) && aggiungiDipendenteAlTurno(turno)) {
+		if (verificoTurnoMezzo(turno) && verificoTurnoEquipaggio(turno)) {
 			turnoRepository.save(turno);
 		} else {
 			logger.error("CONTROLLARE ORARIO");
@@ -49,20 +50,21 @@ public class TurnoService {
 		return turno;
 	}
 
-	public boolean controlloTurnoMezzo(Turno turno) {
+	public boolean possoInserireIlMezzo(Turno turno) {
 
 		List<Turno> listaTurniByMezzo = new ArrayList<>();
 		try {
 			listaTurniByMezzo = turnoRepository.findByMezzo(turno.getMezzo().getTarga());
-		} catch (Exception e) {
+		} catch (NoSuchElementException e) {
 			logger.error("QUALCOSA E' ANDATO MALE... FORSE IL MEZZO NON C'E'");
+			throw e;
 		}
 
-		return listaTurniByMezzo.stream().filter(orarioCongruo(turno)).count() == 0L;
+		return listaTurniByMezzo.stream().filter(orarioDisponibile(turno)).count() == 0L;
 	}
 
-	public boolean aggiungiMezzoAlTurno(Turno turno) {
-		if (controlloTurnoMezzo(turno)) {
+	public boolean verificoTurnoMezzo(Turno turno) {
+		if (possoInserireIlMezzo(turno)) {
 			return true;
 		} else {
 			logger.error("MI DISPIACE IL MEZZO E' OCCUPATO IN QUEL MOMENTO");
@@ -70,11 +72,11 @@ public class TurnoService {
 		}
 	}
 
-	public boolean aggiungiDipendenteAlTurno(Turno turno) {
+	public boolean verificoTurnoEquipaggio(Turno turno) {
 
 		boolean occupato = false;
 		for (Dipendente d : turno.getEquipaggio()) {
-			if (controlloTurnoDipendente(turno, d.getId())) {
+			if (possoInserireIlDipendente(turno, d.getId())) {
 				occupato = true;
 			} else {
 				logger.error(
@@ -86,21 +88,23 @@ public class TurnoService {
 
 	}
 
-	public boolean controlloTurnoDipendente(Turno turno, Long id) {
+	public boolean possoInserireIlDipendente(Turno turno, Long id) {
 
 		Dipendente dipendenteDaControllare = new Dipendente();
 		List<Turno> listaTurniByDipendente = new ArrayList<>();
 		try {
 			dipendenteDaControllare = dipendenteRepository.findById(id).get();
-		} catch (Exception e) {
+		} catch (NoSuchElementException e) {
 			logger.error("il dipendente non esiste");
+			throw e;
+
 		}
 		listaTurniByDipendente = turnoRepository.findByDipendente(dipendenteDaControllare.getId());
-		return listaTurniByDipendente.stream().filter(orarioCongruo(turno)).count() == 0L;
+		return listaTurniByDipendente.stream().filter(orarioDisponibile(turno)).count() == 0L;
 
 	}
 
-	public static Predicate<Turno> orarioCongruo(Turno turno) {
+	public static Predicate<Turno> orarioDisponibile(Turno turno) {
 		return t -> (turno.getIstanteInizio().isAfter(t.getIstanteInizio())
 				&& turno.getIstanteInizio().isBefore(t.getIstanteFine()))
 				|| (turno.getIstanteFine().isAfter(t.getIstanteInizio())

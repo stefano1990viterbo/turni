@@ -40,8 +40,8 @@ public class DipendenteController {
 	}
 
 	@PostMapping("/")
-	public void aggiungiDipendente(@RequestBody @Valid DipendenteDTO dipendenteDTO) {
-		dipendenteService.aggiungiDipendente(convertToEntity(dipendenteDTO));
+	public Dipendente aggiungiDipendente(@RequestBody @Valid DipendenteDTO dipendenteDTO) {
+		return dipendenteService.aggiungiDipendente(convertToEntity(dipendenteDTO));
 	}
 
 	@GetMapping("/{idDipendente}")
