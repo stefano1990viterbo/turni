@@ -13,7 +13,7 @@ import it.stefano.turno.repositorys.RiferimentoRepository;
 
 @Service
 public class MezzoService {
-	 Logger logger = LoggerFactory.getLogger(MezzoService.class);
+	Logger logger = LoggerFactory.getLogger(MezzoService.class);
 	MezzoRepository mezzoRepository;
 	RiferimentoRepository riferimentoRepository;
 
@@ -28,11 +28,12 @@ public class MezzoService {
 	}
 
 	public void aggiungiMezzo(Mezzo mezzo) {
-		
+
 		mezzo.getRiferimenti().stream().forEach(r -> riferimentoRepository.save(r));
-		mezzoRepository.save(mezzo);		
-		logger.info("**** è stato inserito il mezzo con targa: "+mezzo.getTarga());
-		
+
+		mezzoRepository.save(mezzo);
+		logger.info("**** è stato inserito il mezzo con targa: " + mezzo.getTarga());
+
 	}
 
 	public Mezzo leggiMezzoByTarga(String targa) {

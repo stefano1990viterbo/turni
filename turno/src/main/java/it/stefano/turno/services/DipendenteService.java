@@ -2,6 +2,9 @@ package it.stefano.turno.services;
 
 import java.util.List;
 
+import org.hibernate.HibernateException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +13,7 @@ import it.stefano.turno.repositorys.DipendenteRepository;
 
 @Service
 public class DipendenteService {
-
+	Logger logger = LoggerFactory.getLogger(MezzoService.class);
 	DipendenteRepository dipendenteRepository;
 
 	@Autowired
@@ -24,7 +27,17 @@ public class DipendenteService {
 	}
 
 	public Dipendente aggiungiDipendente(Dipendente dipendente) {
-		return dipendenteRepository.save(dipendente);
+
+		try {
+			dipendenteRepository.save(dipendente);
+			logger.info("**** è stato inserito il dipendente: " + dipendente.getId() + " " + dipendente.getCognome()
+					+ " " + dipendente.getNome());
+			return dipendente;
+		} catch (HibernateException e) {
+			logger.error("**** non è stato possibile inserire il dipendente: " + dipendente.getId() + " "
+					+ dipendente.getCognome() + " " + dipendente.getNome());
+			throw e;
+		}
 
 	}
 

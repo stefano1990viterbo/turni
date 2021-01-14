@@ -3,16 +3,14 @@ package it.stefano.turno.entitys;
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 public class Dipendente {
@@ -22,6 +20,7 @@ public class Dipendente {
 	private Long id;
 	private String nome;
 	private String cognome;
+	@Enumerated(EnumType.STRING)
 	private Mansione mansione;
 	@CreationTimestamp
 	private LocalDateTime dtInsertimento;

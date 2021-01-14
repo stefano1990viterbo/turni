@@ -41,13 +41,18 @@ public class TurnoService {
 		// controllo orario mezzo
 		// controllo orario equipaggio
 		// se i controlli sono ok, aggiungo il turno
-
-		if (verificoTurnoMezzo(turno) && verificoTurnoEquipaggio(turno)) {
-			turnoRepository.save(turno);
-		} else {
+		try {
+			if (verificoTurnoMezzo(turno) && verificoTurnoEquipaggio(turno)) {
+				turnoRepository.save(turno);
+			} else {
+				logger.error("CONTROLLARE ORARIO");
+			}
+			return turno;
+		} catch (Exception e) {
 			logger.error("CONTROLLARE ORARIO");
+			throw e;
 		}
-		return turno;
+
 	}
 
 	public boolean possoInserireIlMezzo(Turno turno) {

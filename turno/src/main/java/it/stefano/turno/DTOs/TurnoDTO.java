@@ -3,14 +3,12 @@ package it.stefano.turno.DTOs;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import it.stefano.turno.entitys.Dipendente;
-import it.stefano.turno.entitys.Mezzo;
 import it.stefano.turno.entitys.TipoTurno;
 
 public class TurnoDTO {
 	private Long id;
-	private Mezzo mezzo;
-	private List<Dipendente> equipaggio;
+	private String mezzo;
+	private List<Long> equipaggio;
 	private TipoTurno tipoTurno;
 	private String postazione;
 	private LocalDateTime istanteInizio;
@@ -25,19 +23,19 @@ public class TurnoDTO {
 		this.id = id;
 	}
 
-	public Mezzo getMezzo() {
+	public String getMezzo() {
 		return mezzo;
 	}
 
-	public void setMezzo(Mezzo mezzo) {
+	public void setMezzo(String mezzo) {
 		this.mezzo = mezzo;
 	}
 
-	public List<Dipendente> getEquipaggio() {
+	public List<Long> getEquipaggio() {
 		return equipaggio;
 	}
 
-	public void setEquipaggio(List<Dipendente> equipaggio) {
+	public void setEquipaggio(List<Long> equipaggio) {
 		this.equipaggio = equipaggio;
 	}
 

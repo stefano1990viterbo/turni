@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,12 +14,6 @@ import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 public class Turno {
@@ -28,6 +24,7 @@ public class Turno {
 	private Mezzo mezzo;
 	@ManyToMany
 	private List<Dipendente> equipaggio;
+	@Enumerated(EnumType.STRING)
 	private TipoTurno tipoTurno;
 	private String postazione;
 	private LocalDateTime istanteInizio;

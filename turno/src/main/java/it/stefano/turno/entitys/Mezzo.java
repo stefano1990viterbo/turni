@@ -5,6 +5,10 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -12,20 +16,18 @@ import javax.persistence.OneToMany;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
 @Entity
 public class Mezzo {
-
-	private String codice;
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	private String codice;
 	private String targa;
 	private String enteAppartenenza;
 	@OneToMany(cascade = { CascadeType.ALL })
 	@JoinColumn(name = "TARGA")
 	private List<Riferimento> riferimenti;
+	@Enumerated(EnumType.STRING)
 	private TipoMezzo tipoMezzo;
 	@CreationTimestamp
 	private LocalDateTime dtInsertimento;

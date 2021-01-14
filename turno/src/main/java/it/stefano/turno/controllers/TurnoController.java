@@ -19,7 +19,6 @@ import it.stefano.turno.DTOs.TurnoDTO;
 import it.stefano.turno.entitys.Turno;
 import it.stefano.turno.services.TurnoService;
 
-
 @RestController
 @RequestMapping("/turni")
 public class TurnoController {
@@ -28,16 +27,21 @@ public class TurnoController {
 
 	TurnoService turnoService;
 
+//	Turno turno;
+
+//	MezzoService mezzoService;
+
 	@Autowired
 	public TurnoController(TurnoService turnoService, ModelMapper modelMapper) {
 		this.turnoService = turnoService;
 		this.modelMapper = modelMapper;
+
 	}
 
 	@GetMapping("/")
 	public List<TurnoDTO> listaTurni() {
 		return turnoService.listaTurni().stream().map(this::convertToDTO).collect(Collectors.toList());
-		
+
 	}
 
 	@PostMapping("/")
@@ -56,8 +60,6 @@ public class TurnoController {
 		turnoService.rimuoviTurnoById(idTurno);
 	}
 
-
-
 	private TurnoDTO convertToDTO(Turno turno) {
 		TurnoDTO turnoDTO;
 		turnoDTO = modelMapper.map(turno, TurnoDTO.class);
@@ -65,6 +67,9 @@ public class TurnoController {
 	}
 
 	private Turno convertToEntity(TurnoDTO turnoDTO) {
-		return modelMapper.map(turnoDTO, Turno.class);
+		Turno turnoDaAggiungere = modelMapper.map(turnoDTO, Turno.class);
+		// TODO cerco il mezzo e dopo lo aggiungo al turnoDaAgiungere
+//		mezzoService.leggiMezzoByTarga(turnoDTO.)
+		return turnoDaAggiungere;
 	}
 }
