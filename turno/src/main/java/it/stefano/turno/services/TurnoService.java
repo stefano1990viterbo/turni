@@ -3,6 +3,7 @@ package it.stefano.turno.services;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import org.slf4j.Logger;
@@ -58,14 +59,19 @@ public class TurnoService {
 	public boolean possoInserireIlMezzo(Turno turno) {
 
 		List<Turno> listaTurniByMezzo = new ArrayList<>();
+		boolean mezzoDisponibile = false;
 		try {
-			listaTurniByMezzo = turnoRepository.findByMezzo(turno.getMezzo().getTarga());
+			listaTurniByMezzo = turnoRepository.findByMezzo(turno.getMezzo().getId());
+
 		} catch (NoSuchElementException e) {
 			logger.error("QUALCOSA E' ANDATO MALE... FORSE IL MEZZO NON C'E'");
 			throw e;
 		}
 
-		return listaTurniByMezzo.stream().filter(orarioDisponibile(turno)).count() == 0L;
+		mezzoDisponibile = controlloDisponibilita(listaTurniByMezzo, turno);
+
+		return mezzoDisponibile;
+
 	}
 
 	public boolean verificoTurnoMezzo(Turno turno) {
@@ -97,6 +103,9 @@ public class TurnoService {
 
 		Dipendente dipendenteDaControllare = new Dipendente();
 		List<Turno> listaTurniByDipendente = new ArrayList<>();
+		List<Long> listaIdTurniByDipendente = new ArrayList<>();
+		List<Long> listaDiControllo = new ArrayList<>();
+		boolean dipendenteDiponibile = false;
 		try {
 			dipendenteDaControllare = dipendenteRepository.findById(id).get();
 		} catch (NoSuchElementException e) {
@@ -104,16 +113,48 @@ public class TurnoService {
 			throw e;
 
 		}
-		listaTurniByDipendente = turnoRepository.findByDipendente(dipendenteDaControllare.getId());
-		return listaTurniByDipendente.stream().filter(orarioDisponibile(turno)).count() == 0L;
+		listaIdTurniByDipendente = turnoRepository.findTurnoByDipendente(dipendenteDaControllare.getId());
+		for (Long idTurno : listaIdTurniByDipendente) {
+			Optional<Turno> turnoDaControllare = turnoRepository.findById(idTurno);
+			listaTurniByDipendente.add(turnoDaControllare.get());
+		}
+
+		dipendenteDiponibile = controlloDisponibilita(listaTurniByDipendente, turno);
+
+		return dipendenteDiponibile;
 
 	}
 
+	public boolean controlloDisponibilita(List<Turno> listaTurniDaControllare, Turno turno) {
+		boolean controllo = false;
+		int i = 0;
+		for (Turno t : listaTurniDaControllare) {
+			if ((t.getIstanteInizio().isBefore(turno.getIstanteInizio())
+					&& t.getIstanteFine().isBefore(turno.getIstanteFine()))
+					|| (t.getIstanteFine().isAfter(turno.getIstanteInizio())
+							&& t.getIstanteFine().isAfter(turno.getIstanteFine()))) {
+				i++;
+			}
+			if (i == listaTurniDaControllare.size()) {
+				controllo = true;
+			}
+		}
+		return controllo;
+	}
+
+//	public static Predicate<Turno> orarioDisponibile(Turno turno) {
+//		return t -> (turno.getIstanteInizio().isBefore(t.getIstanteInizio())
+//				&& turno.getIstanteInizio().isAfter(t.getIstanteFine()))
+//				|| (turno.getIstanteFine().isBefore(t.getIstanteInizio())
+//						&& turno.getIstanteFine().isAfter(t.getIstanteFine()));
+//
+//	}
 	public static Predicate<Turno> orarioDisponibile(Turno turno) {
-		return t -> (turno.getIstanteInizio().isAfter(t.getIstanteInizio())
-				&& turno.getIstanteInizio().isBefore(t.getIstanteFine()))
-				|| (turno.getIstanteFine().isAfter(t.getIstanteInizio())
-						&& turno.getIstanteFine().isBefore(t.getIstanteFine()));
+		return t -> (turno.getIstanteInizio().isBefore(t.getIstanteInizio())
+				&& turno.getIstanteFine().isBefore(t.getIstanteInizio()))
+
+				|| (turno.getIstanteInizio().isAfter(t.getIstanteFine())
+						&& turno.getIstanteFine().isAfter(t.getIstanteFine()));
 
 	}
 

@@ -9,10 +9,10 @@ import it.stefano.turno.entitys.Turno;
 
 public interface TurnoRepository extends CrudRepository<Turno, Long> {
 
-	@Query(value = "select * from turno where mezzo_targa = ?1", nativeQuery = true)
-	List<Turno> findByMezzo(String targa);
+	@Query(value = "select * from turno turno where mezzo_id = ?1", nativeQuery = true)
+	List<Turno> findByMezzo(Long idMezzo);
 
-	@Query(value = "select * from turno_equipaggio where equipaggio_id = ?1", nativeQuery = true)
-	List<Turno> findByDipendente(Long id);
+	@Query(value = "SELECT * FROM TURNO_EQUIPAGGIO  where equipaggio_id= ?1", nativeQuery = true)
+	List<Long> findTurnoByDipendente(Long id);
 
 }

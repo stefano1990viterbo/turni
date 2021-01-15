@@ -94,4 +94,12 @@ public class Mezzo {
 		this.dtUpdate = dtUpdate;
 	}
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 }

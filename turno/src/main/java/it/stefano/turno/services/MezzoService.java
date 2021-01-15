@@ -30,7 +30,6 @@ public class MezzoService {
 	public void aggiungiMezzo(Mezzo mezzo) {
 
 		mezzo.getRiferimenti().stream().forEach(r -> riferimentoRepository.save(r));
-
 		mezzoRepository.save(mezzo);
 		logger.info("**** è stato inserito il mezzo con targa: " + mezzo.getTarga());
 

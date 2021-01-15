@@ -1,5 +1,6 @@
 package it.stefano.turno.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,7 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import it.stefano.turno.DTOs.TurnoDTO;
+import it.stefano.turno.entitys.Dipendente;
+import it.stefano.turno.entitys.Mezzo;
 import it.stefano.turno.entitys.Turno;
+import it.stefano.turno.services.DipendenteService;
+import it.stefano.turno.services.MezzoService;
 import it.stefano.turno.services.TurnoService;
 
 @RestController
@@ -29,13 +34,17 @@ public class TurnoController {
 
 //	Turno turno;
 
-//	MezzoService mezzoService;
+	MezzoService mezzoService;
+
+	DipendenteService dipendenteService;
 
 	@Autowired
-	public TurnoController(TurnoService turnoService, ModelMapper modelMapper) {
+	public TurnoController(TurnoService turnoService, ModelMapper modelMapper, MezzoService mezzoService,
+			DipendenteService dipendenteService) {
 		this.turnoService = turnoService;
 		this.modelMapper = modelMapper;
-
+		this.mezzoService = mezzoService;
+		this.dipendenteService = dipendenteService;
 	}
 
 	@GetMapping("/")
@@ -68,8 +77,16 @@ public class TurnoController {
 
 	private Turno convertToEntity(TurnoDTO turnoDTO) {
 		Turno turnoDaAggiungere = modelMapper.map(turnoDTO, Turno.class);
-		// TODO cerco il mezzo e dopo lo aggiungo al turnoDaAgiungere
-//		mezzoService.leggiMezzoByTarga(turnoDTO.)
+
+		Mezzo mezzoDaAggiungere = mezzoService.leggiMezzoByTarga(turnoDTO.getMezzo());
+		List<Dipendente> equipaggioDaAggiungere = new ArrayList<Dipendente>();
+		for (Long d : turnoDTO.getEquipaggio()) {
+			Dipendente dipendenteDaAggiungere = dipendenteService.leggiDipendenteById(d);
+			equipaggioDaAggiungere.add(dipendenteDaAggiungere);
+		}
+		turnoDaAggiungere.setEquipaggio(equipaggioDaAggiungere);
+		turnoDaAggiungere.setMezzo(mezzoDaAggiungere);
+
 		return turnoDaAggiungere;
 	}
 }
