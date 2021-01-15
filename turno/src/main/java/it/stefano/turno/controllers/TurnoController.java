@@ -54,8 +54,9 @@ public class TurnoController {
 	}
 
 	@PostMapping("/")
-	public void aggiungiTurno(@RequestBody @Valid TurnoDTO turnoDTO) {
-		turnoService.aggiungiTurno(convertToEntity(turnoDTO));
+	public Turno aggiungiTurno(@RequestBody @Valid TurnoDTO turnoDTO) {
+		Turno turnoAggiunto = turnoService.aggiungiTurno(convertToEntity(turnoDTO));
+		return turnoAggiunto;
 	}
 
 	@GetMapping("/{idTurno}")

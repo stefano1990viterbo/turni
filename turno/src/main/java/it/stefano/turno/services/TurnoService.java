@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,6 +68,9 @@ public class TurnoService {
 		}
 
 		mezzoDisponibile = controlloDisponibilita(listaTurniByMezzo, turno);
+		if (listaTurniByMezzo.isEmpty()) {
+			mezzoDisponibile = true;
+		}
 
 		return mezzoDisponibile;
 
@@ -140,22 +142,6 @@ public class TurnoService {
 			}
 		}
 		return controllo;
-	}
-
-//	public static Predicate<Turno> orarioDisponibile(Turno turno) {
-//		return t -> (turno.getIstanteInizio().isBefore(t.getIstanteInizio())
-//				&& turno.getIstanteInizio().isAfter(t.getIstanteFine()))
-//				|| (turno.getIstanteFine().isBefore(t.getIstanteInizio())
-//						&& turno.getIstanteFine().isAfter(t.getIstanteFine()));
-//
-//	}
-	public static Predicate<Turno> orarioDisponibile(Turno turno) {
-		return t -> (turno.getIstanteInizio().isBefore(t.getIstanteInizio())
-				&& turno.getIstanteFine().isBefore(t.getIstanteInizio()))
-
-				|| (turno.getIstanteInizio().isAfter(t.getIstanteFine())
-						&& turno.getIstanteFine().isAfter(t.getIstanteFine()));
-
 	}
 
 	public Turno leggiTurnoById(Long idTurno) {
